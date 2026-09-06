@@ -1,0 +1,23 @@
+# Pinned to what this was measured with (Python 3.13.6, Windows 11, RTX 4060 8 GB).
+#
+# To re-run the ANALYSIS and redraw the figures from the committed data you only need
+# the first three lines. No GPU, no downloads, no villa.
+numpy==2.5.2
+scipy==1.18.1
+matplotlib==3.11.1
+
+# Only needed to REDO the measurement itself (verify/01, 02, 03, 08 and the first half
+# of verify/10). These steps also need a CUDA GPU, the model checkpoint and the label
+# and volume chunks.
+scikit-learn==1.9.0
+numcodecs==0.15.1
+huggingface_hub==1.30.0
+torch==2.8.0
+#
+# torch must match your CUDA build; install it first, e.g.
+#   pip install torch==2.8.0 --index-url https://download.pytorch.org/whl/cu128
+#
+# The model code comes from the villa repo, not from PyPI:
+#   git clone https://github.com/ScrollPrize/villa
+#   pip install -e villa/vesuvius            # tested at commit 23adee04
+# or place the checkout at $VZ_ROOT/villa so the scripts find it on sys.path.
