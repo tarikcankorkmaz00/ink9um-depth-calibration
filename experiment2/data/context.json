@@ -1,0 +1,400 @@
+{
+ "note": "Fixed facts this experiment stands on. Everything here was read out of the published checkpoint config, the public segment metadata or the villa source; nothing here is an estimate.",
+ "checkpoint": "scrollprize/ink_9um, hybrid_3d2d-seed42/step-075000.pth",
+ "training": {
+  "patch_size_zyx": [
+   17,
+   128,
+   128
+  ],
+  "stride_xy": 32,
+  "patch_overlap": 0.25,
+  "normalization": "robust_mad",
+  "depth_channels": 17,
+  "representations": 29,
+  "public_pooled_representations": 24,
+  "native_9p362_representations": 5,
+  "native_9p362_inference_only": [
+   "w043"
+  ],
+  "sampling_strategy": "fixed_scroll_prior_stratified",
+  "batch_size": 64,
+  "scroll_quota": {
+   "0139": 29,
+   "0814": 2,
+   "1667": 22,
+   "Paris4": 11
+  },
+  "flat_z_window_jitter": {
+   "enabled": true,
+   "max_offset": 2,
+   "window_depth": 17,
+   "probability": 1.0,
+   "padding": "forbidden",
+   "training_only": true
+  },
+  "source": "checkpoint config + data_provenance block"
+ },
+ "validation_cases": {
+  "reserved_validation_cases": [
+   "pherc0139-w016",
+   "pherc0139-w028",
+   "pherc0139-w029",
+   "pherc0814-46527",
+   "pherc1667-w018",
+   "pherc1667-w023",
+   "pherc1667-w028",
+   "pherc1667-w029",
+   "pherc1667-w031"
+  ],
+  "online_validation_cases": [
+   "pherc0139-w016",
+   "pherc0814-46527",
+   "pherc1667-w029"
+  ],
+  "published_masks": [
+   "pherc0139-w016",
+   "pherc0814-46527",
+   "pherc1667-w029"
+  ],
+  "warning": "pherc0139-w028 is the aligned side of pair w044 and it is listed as a reserved validation case. Its validation mask is not published, so which pixels were held out cannot be checked. Equal training exposure for that pair is NOT verifiable."
+ },
+ "corpus": {
+  "columns": [
+   "scroll",
+   "role",
+   "representation",
+   "sampler_physical_key"
+  ],
+  "rows": [
+   [
+    "0139",
+    "public_2p4_level2_zmean4",
+    "pherc0139-w016",
+    "0139:w016"
+   ],
+   [
+    "0139",
+    "public_2p4_level2_zmean4",
+    "pherc0139-w017",
+    "0139:w017"
+   ],
+   [
+    "0139",
+    "public_2p4_level2_zmean4",
+    "pherc0139-w028",
+    "0139:w028"
+   ],
+   [
+    "0139",
+    "public_2p4_level2_zmean4",
+    "pherc0139-w029",
+    "0139:w029"
+   ],
+   [
+    "0139",
+    "public_2p4_level2_zmean4",
+    "pherc0139-w035",
+    "0139:w035"
+   ],
+   [
+    "0139",
+    "public_2p4_level2_zmean4",
+    "pherc0139-w039",
+    "0139:w039"
+   ],
+   [
+    "0139",
+    "public_2p4_level2_zmean4",
+    "pherc0139-w040",
+    "0139:w040"
+   ],
+   [
+    "0139",
+    "public_2p4_level2_zmean4",
+    "pherc0139-w041",
+    "0139:w041"
+   ],
+   [
+    "0139",
+    "public_2p4_level2_zmean4",
+    "pherc0139-w043",
+    "0139:w043"
+   ],
+   [
+    "0139",
+    "native_9p362_level0",
+    "w035",
+    "0139:w035"
+   ],
+   [
+    "0139",
+    "native_9p362_level0",
+    "w039",
+    "0139:w039"
+   ],
+   [
+    "0139",
+    "native_9p362_level0",
+    "w040",
+    "0139:w040"
+   ],
+   [
+    "0139",
+    "native_9p362_level0",
+    "w041",
+    "0139:w041"
+   ],
+   [
+    "0139",
+    "native_9p362_level0",
+    "w044",
+    "0139:w044"
+   ],
+   [
+    "0814",
+    "public_2p4_level2_zmean4",
+    "pherc0814-46527",
+    "0814:46527"
+   ],
+   [
+    "1667",
+    "public_2p4_level2_zmean4",
+    "pherc1667-w013",
+    "1667:w013"
+   ],
+   [
+    "1667",
+    "public_2p4_level2_zmean4",
+    "pherc1667-w018",
+    "1667:w018"
+   ],
+   [
+    "1667",
+    "public_2p4_level2_zmean4",
+    "pherc1667-w023",
+    "1667:w023"
+   ],
+   [
+    "1667",
+    "public_2p4_level2_zmean4",
+    "pherc1667-w028",
+    "1667:w028"
+   ],
+   [
+    "1667",
+    "public_2p4_level2_zmean4",
+    "pherc1667-w029",
+    "1667:w029"
+   ],
+   [
+    "1667",
+    "public_2p4_level2_zmean4",
+    "pherc1667-w031",
+    "1667:w031"
+   ],
+   [
+    "Paris4",
+    "public_2p4_level2_zmean4",
+    "phercparis4-w00",
+    "Paris4:w00"
+   ],
+   [
+    "Paris4",
+    "public_2p4_level2_zmean4",
+    "phercparis4-w01",
+    "Paris4:w01"
+   ],
+   [
+    "Paris4",
+    "public_2p4_level2_zmean4",
+    "phercparis4-w02",
+    "Paris4:w02"
+   ],
+   [
+    "Paris4",
+    "public_2p4_level2_zmean4",
+    "phercparis4-w03",
+    "Paris4:w03"
+   ],
+   [
+    "Paris4",
+    "public_2p4_level2_zmean4",
+    "phercparis4-w05",
+    "Paris4:w05"
+   ],
+   [
+    "Paris4",
+    "public_2p4_level2_zmean4",
+    "phercparis4-w06",
+    "Paris4:w06"
+   ],
+   [
+    "Paris4",
+    "public_2p4_level2_zmean4",
+    "phercparis4-w07",
+    "Paris4:w07"
+   ],
+   [
+    "Paris4",
+    "public_2p4_level2_zmean4",
+    "phercparis4-w09",
+    "Paris4:w09"
+   ]
+  ]
+ },
+ "sampler_naming_bug": {
+  "what": "the sampler's physical-segment key for the aligned representation of physical w044 is '0139:w028', while the native9 representation of the same physical segment is '0139:w044'. The two volumes live in the same S3 segment folder (20260115000000-w044_2026011522), so they are one piece of papyrus.",
+  "effect": "the sampler counts 10 physical segments in PHerc0139 where there are 9, so physical w044 draws twice the batch share of the other paired segments.",
+  "checkable_in": "the pairing table above (shared_segment_folder) and the corpus table"
+ },
+ "pairing": [
+  {
+   "physical_segment": "w035",
+   "aligned_label_name": "pherc0139-w035",
+   "native9_label_name": "w035",
+   "shared_segment_folder": "20260317000000-w035_2026031718",
+   "aligned_volume": "https://vesuvius-challenge-open-data.s3.amazonaws.com/PHerc0139/segments/20260317000000-w035_2026031718/surface-volumes/2.399um-0.22m-78keV-volume-20260102150214.zarr",
+   "native9_volume": "https://vesuvius-challenge-open-data.s3.amazonaws.com/PHerc0139/segments/20260317000000-w035_2026031718/surface-volumes/9.362um-1.2m-113keV-volume-20250728140407.zarr",
+   "frozen_transform": {
+    "scale": 0.997,
+    "dy_px": 7,
+    "dx_px": 8,
+    "total_scale": 0.972688,
+    "label_dice_after": 0.907768,
+    "label_dice_before": 0.874813
+   }
+  },
+  {
+   "physical_segment": "w039",
+   "aligned_label_name": "pherc0139-w039",
+   "native9_label_name": "w039",
+   "shared_segment_folder": "20260302000000-w039_2026030210",
+   "aligned_volume": "https://vesuvius-challenge-open-data.s3.amazonaws.com/PHerc0139/segments/20260302000000-w039_2026030210/surface-volumes/2.399um-0.22m-78keV-volume-20260102150214.zarr",
+   "native9_volume": "https://vesuvius-challenge-open-data.s3.amazonaws.com/PHerc0139/segments/20260302000000-w039_2026030210/surface-volumes/9.362um-1.2m-113keV-volume-20250728140407.zarr",
+   "frozen_transform": {
+    "scale": 0.996,
+    "dy_px": 8,
+    "dx_px": 6,
+    "total_scale": 0.9717124,
+    "label_dice_after": 0.985183,
+    "label_dice_before": 0.854874
+   }
+  },
+  {
+   "physical_segment": "w040",
+   "aligned_label_name": "pherc0139-w040",
+   "native9_label_name": "w040",
+   "shared_segment_folder": "20250831000000-w040_2025083102",
+   "aligned_volume": "https://vesuvius-challenge-open-data.s3.amazonaws.com/PHerc0139/segments/20250831000000-w040_2025083102/surface-volumes/2.399um-0.22m-78keV-volume-20260102150214.zarr",
+   "native9_volume": "https://vesuvius-challenge-open-data.s3.amazonaws.com/PHerc0139/segments/20250831000000-w040_2025083102/surface-volumes/9.362um-1.2m-113keV-volume-20250728140407.zarr",
+   "frozen_transform": {
+    "scale": 0.997,
+    "dy_px": 5,
+    "dx_px": 6,
+    "total_scale": 0.972688,
+    "label_dice_after": 0.969501,
+    "label_dice_before": 0.894084
+   }
+  },
+  {
+   "physical_segment": "w041",
+   "aligned_label_name": "pherc0139-w041",
+   "native9_label_name": "w041",
+   "shared_segment_folder": "20260108000000-w041_2026010816",
+   "aligned_volume": "https://vesuvius-challenge-open-data.s3.amazonaws.com/PHerc0139/segments/20260108000000-w041_2026010816/surface-volumes/2.399um-0.22m-78keV-volume-20260102150214.zarr",
+   "native9_volume": "https://vesuvius-challenge-open-data.s3.amazonaws.com/PHerc0139/segments/20260108000000-w041_2026010816/surface-volumes/9.362um-1.2m-113keV-volume-20250728140407.zarr",
+   "frozen_transform": {
+    "scale": 0.996,
+    "dy_px": 5,
+    "dx_px": 9,
+    "total_scale": 0.9717124,
+    "label_dice_after": 0.985605,
+    "label_dice_before": 0.946793
+   }
+  },
+  {
+   "physical_segment": "w044",
+   "aligned_label_name": "pherc0139-w028",
+   "native9_label_name": "w044",
+   "shared_segment_folder": "20260115000000-w044_2026011522",
+   "aligned_volume": "https://vesuvius-challenge-open-data.s3.amazonaws.com/PHerc0139/segments/20260115000000-w044_2026011522/surface-volumes/2.399um-0.22m-78keV-volume-20260102150214.zarr",
+   "native9_volume": "https://vesuvius-challenge-open-data.s3.amazonaws.com/PHerc0139/segments/20260115000000-w044_2026011522/surface-volumes/9.362um-1.2m-113keV-volume-20250728140407.zarr",
+   "frozen_transform": {
+    "scale": 0.998,
+    "dy_px": 6,
+    "dx_px": 5,
+    "total_scale": 0.9736636,
+    "label_dice_after": 0.891155,
+    "label_dice_before": 0.881531
+   }
+  }
+ ],
+ "z_grid": {
+  "aligned_um": [
+   -38.384,
+   -28.788,
+   -19.192,
+   -9.596,
+   0.0,
+   9.596,
+   19.192,
+   28.788,
+   38.384
+  ],
+  "native_um": [
+   -37.448,
+   -28.086,
+   -18.724,
+   -9.362,
+   0.0,
+   9.362,
+   18.724,
+   28.086,
+   37.448
+  ],
+  "aligned_source_slice_offsets": [
+   -16,
+   -12,
+   -8,
+   -4,
+   0,
+   4,
+   8,
+   12,
+   16
+  ],
+  "native_slice_offsets": [
+   -4,
+   -3,
+   -2,
+   -1,
+   0,
+   1,
+   2,
+   3,
+   4
+  ],
+  "endpoint_mismatch_um": 0.936
+ },
+ "tile_eligibility": {
+  "min_supervision_px": 500,
+  "min_ink_px": 60,
+  "min_bg_px": 60,
+  "min_roi_px": 96,
+  "note": "identical to the filter used in experiment 1, not changed"
+ },
+ "supervision_chunk_counts": {
+  "note": "number of published 128x128 supervision label chunks per segment, counted from the label cache index. Used only for the coverage upper bound. This is the one number here that cannot be recomputed from committed data.",
+  "w035": 1800,
+  "w039": 3835,
+  "w040": 2989,
+  "w041": 2928,
+  "w044": 2898
+ },
+ "held_out_reference": {
+  "note": "same checkpoint, comparable measurement, but on the release's own held-out region (experiment 1, 42 tiles, 3 segments)",
+  "mean_roc_auc": 0.78493,
+  "source": "experiment 1, data/verification.json"
+ }
+}

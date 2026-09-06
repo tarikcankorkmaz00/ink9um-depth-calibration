@@ -1,0 +1,101 @@
+{
+ "note": "Real sliding-window inference with Hann blending, exactly like infer.py's own path: one 512x512 region per measurement, chosen as the most densely supervised 4x4 chunk block, scored on the inner 384x384 (64 px of blend edge discarded). Only the stride changes.",
+ "protocol": {
+  "patch_size": 128,
+  "region_px": 512,
+  "scored_inner_px": 384,
+  "edge_discarded_px": 64,
+  "blend": "hann",
+  "window_depth": 17,
+  "positions": "range(0, length-128+1, stride) plus length-128, exactly as _sliding_positions_1d in infer.py"
+ },
+ "measurements": 5,
+ "physical_segments": 4,
+ "scroll": "PHerc0139",
+ "auc_by_stride": {
+  "aligned|pherc0139-w040": {
+   "32": 0.999072,
+   "38": 0.995905,
+   "40": 0.998838,
+   "48": 0.998662,
+   "51": 0.996589,
+   "64": 0.998202,
+   "77": 0.97969,
+   "80": 0.998442,
+   "88": 0.997722,
+   "90": 0.988309,
+   "96": 0.998253
+  },
+  "aligned|pherc0139-w041": {
+   "32": 0.999915,
+   "38": 0.997559,
+   "40": 0.99984,
+   "48": 0.999896,
+   "51": 0.980896,
+   "64": 0.999901,
+   "77": 0.994345,
+   "80": 0.999873,
+   "88": 0.999707,
+   "90": 0.968113,
+   "96": 0.999847
+  },
+  "native9|w035": {
+   "32": 0.999786,
+   "38": 0.995373,
+   "40": 0.999715,
+   "48": 0.999796,
+   "51": 0.993846,
+   "64": 0.999734,
+   "77": 0.989692,
+   "80": 0.999668,
+   "88": 0.999466,
+   "90": 0.961799,
+   "96": 0.999713
+  },
+  "native9|w039": {
+   "32": 0.999543,
+   "38": 0.984184,
+   "40": 0.999365,
+   "48": 0.999476,
+   "51": 0.954472,
+   "64": 0.999463,
+   "77": 0.971586,
+   "80": 0.99935,
+   "88": 0.999144,
+   "90": 0.931619,
+   "96": 0.999359
+  },
+  "native9|w041": {
+   "32": 0.999776,
+   "38": 0.997797,
+   "40": 0.99976,
+   "48": 0.999703,
+   "51": 0.993506,
+   "64": 0.999748,
+   "77": 0.975976,
+   "80": 0.999617,
+   "88": 0.998426,
+   "90": 0.984933,
+   "96": 0.999488
+  }
+ },
+ "neighbour_pairs": [
+  [
+   48,
+   51
+  ],
+  [
+   80,
+   77
+  ],
+  [
+   88,
+   90
+  ],
+  [
+   40,
+   38
+  ]
+ ],
+ "neighbour_pairs_note": "each pair has nearly identical coverage geometry; the only thing that changes is whether the stride is a multiple of 8."
+}

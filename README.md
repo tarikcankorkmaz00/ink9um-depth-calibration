@@ -19,6 +19,40 @@ it lives below segment scale, and a single scalar per segment cannot reach it.
 
 ---
 
+## There is a second experiment in this repo: [`experiment2/`](experiment2/README.md)
+
+It started as a different question - whether the pooled model is held back because 24 of its
+29 training representations are *derived* 9.6 um data while all 13 prize-eligible scrolls
+are *native* 9.362 um scans - and five physical PHerc0139 segments are published in both
+representations, so that is a free controlled comparison. The answer to that question is a
+negative: with the tiles matched, no measurable difference. The number a first draft of mine
+put in its headline, +0.0020 peak AUC, turns out to be an averaging artefact; the tile
+median is +0.00005.
+
+The reason to read it is what fell out while I was making that comparison fair.
+
+**The published checkpoint's output depends on where the 128x128 patch starts.** Score the
+same pixels against the same labels and move only the window origin: shifts that are a
+multiple of 8 px cost nothing (|delta AUC| <= 0.008); shifts that are not cost up to
+**-0.13 mean AUC** on a single patch. In real sliding-window inference with Hann blending,
+every stride that is a multiple of 8 lands within 0.0006 of the default and the off-grid
+strides cost **-0.005 to -0.032**, in every measurement. That is reachable from the shipped
+CLI, because `stride = round(128 * (1 - overlap))`, so of the ten one-decimal `--overlap`
+values a person might type, **eight are off the grid**. `--overlap 0.3` costs 0.032 AUC
+against the default for nothing.
+
+The practical line: **put patch origins on a multiple of 8, preferably 32** (the training
+`stride_xy`), which with the CLI means an `--overlap` of 0, 0.25, 0.375, 0.5, 0.75 or
+0.875. The default 0.5 is already safe.
+
+I reproduced the effect on three independent code paths and ruled out fp16, input
+normalisation and uneven blending coverage - and **could not explain it**: the architecture
+predicts a period of 32 and the measured period is 8. The behaviour is measured; no
+mechanism is claimed. Every measurement there is inside the training region and on one
+scroll, and `experiment2/README.md` says so where it matters.
+
+---
+
 ## What was measured
 
 Three segments in the public `ink_9um` release carry a `validation_mask`:
@@ -243,6 +277,20 @@ VZ_OUT=data python verify/11_collect.py    # rebuilds data/verification.json
 python make_figures.py             # redraws the three figures
 ```
 
+The second experiment reproduces the same way, from its own committed data and the same
+three packages; see [`experiment2/README.md`](experiment2/README.md):
+
+```
+python experiment2/verify/01_phase.py         # the patch-phase effect and its controls
+python experiment2/verify/02_blended.py       # what it costs in blended inference
+python experiment2/verify/03_paired.py        # the paired family comparison
+python experiment2/verify/04_confounders.py   # noise floor, placebos, corpus exposure
+python experiment2/make_figures.py            # redraws its two figures
+```
+
+`experiment2/verify/04_confounders.py` reads `data/tile_scan_531.json` from this directory
+and re-grids it, so the two experiments share a raw measurement.
+
 Run in that order from a fresh checkout and `data/verification.json` and all three PNGs
 come back byte for byte identical to the committed ones. Every seeded procedure
 (permutation null, bootstraps, the size-matched control) uses a fixed seed.
@@ -280,8 +328,15 @@ make_figures.py                     the three figures
 data/verification.json              every number quoted above
 data/tile_scan_531.json             the full sweep: 433 aligned tiles at 17 depths, plus
                                     98 native9 tiles on a coarser grid, excluded above
+experiment2/                        the second experiment: the patch-phase effect, and
+                                    the paired representation-family negative. Its own
+                                    README, data, verify scripts, GPU measurement
+                                    scripts and figures live under that directory.
 ```
 
 `data/verification.json` holds the two raw measurements (`heldout_scan`,
 `supervision_scan`) plus everything derived from them; the derived sections are exactly
 what steps 4 to 10 print, so they can be regenerated and checked against the file.
+
+The 98 native9 tiles that this experiment excludes are exactly the ones `experiment2/`
+goes on to use, on a common in-phase grid and paired against their aligned twins.
