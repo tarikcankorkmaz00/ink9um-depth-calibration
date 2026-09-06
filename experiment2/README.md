@@ -65,7 +65,7 @@ Two things about that table that I would rather state than have someone find:
 
 | candidate explanation | test | result |
 |---|---|---|
-| fp16 numerics | rerun the whole scan in fp32 | largest fp16/fp32 gap 0.0001 |
+| fp16 numerics | rerun the whole scan in fp32 | largest fp16/fp32 gap 0.00011 |
 | per-window input normalisation | normalise once over the whole block instead | shift-4 cost -0.15769 vs -0.15819 |
 | a bug in my scoring code | rewrite the measurement from scratch, second code path | period 8, loss -0.15 to -0.23 |
 | uneven coverage in blended inference | compare neighbouring strides (see below) | ruled out, 5/5 in four pairs |
