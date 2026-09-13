@@ -1,7 +1,7 @@
 # The depth the ink_9um model wants is not a per-segment number
 
-The `ink_9um` model card notes that per-scroll models still beat the pooled one and asks
-why. I thought part of the answer was depth: that each segment render sits at a slightly
+The `ink_9um` model card notes that the models can be quite sensitive to a z layer offset.
+I thought that offset might be systematic: that each segment render sits at a slightly
 wrong z and that one scalar per segment would fix it. I measured it, got a good-looking
 number, and then spent longer trying to break it than to find it. It broke.
 
@@ -33,19 +33,23 @@ The reason to read it is what fell out while I was making that comparison fair.
 
 **The published checkpoint's output depends on where the 128x128 patch starts.** Score the
 same pixels against the same labels and move only the window origin: shifts that are a
-multiple of 8 px cost nothing (|delta AUC| <= 0.008); shifts that are not cost up to
-**-0.13 mean AUC** on a single patch. In real sliding-window inference with Hann blending,
-every stride that is a multiple of 8 lands within 0.0006 of the default and the off-grid
-strides cost **-0.005 to -0.032**, in every measurement. That is reachable from the shipped
+multiple of 8 px, up to 32 px, cost nothing in the tile scans (|delta AUC| <= 0.008); shifts
+that are not cost up to **-0.13 mean AUC** on a single patch in the one-axis tile scan (up to -0.23 in a
+12-block reproduction). In real sliding-window inference
+with Hann blending, the six on-grid strides I tested land within 0.0006 of the default on
+average, and the four off-grid strides cost **-0.005 to -0.032** on average, each worse than
+the default in 5 of 5 measurements. That is reachable from the shipped
 CLI, because `stride = round(128 * (1 - overlap))`, so of the ten one-decimal `--overlap`
 values a person might type, **eight are off the grid**. `--overlap 0.3` costs 0.032 AUC
-against the default for nothing.
+on average against the default (5 of 5 measurements) for nothing.
 
 The practical line: **put patch origins on a multiple of 8, preferably 32** (the training
 `stride_xy`), which with the CLI means an `--overlap` of 0, 0.25, 0.375, 0.5, 0.75 or
 0.875. The default 0.5 is already safe.
 
-I reproduced the effect on three independent code paths and ruled out fp16, input
+I measured the effect on three code paths (two in `experiment2/measure/`, which share their
+loading and scoring code, and a second implementation whose output is in
+`experiment2/data/phase.json` but whose code is not in this repo) and ruled out fp16, input
 normalisation and uneven blending coverage - and **could not explain it**: the architecture
 predicts a period of 32 and the measured period is 8. The behaviour is measured; no
 mechanism is claimed. Every measurement there is inside the training region and on one
@@ -291,8 +295,12 @@ python experiment2/make_figures.py            # redraws its two figures
 `experiment2/verify/04_confounders.py` reads `data/tile_scan_531.json` from this directory
 and re-grids it, so the two experiments share a raw measurement.
 
-Run in that order from a fresh checkout and `data/verification.json` and all three PNGs
-come back byte for byte identical to the committed ones. Every seeded procedure
+Run in that order from a fresh checkout and the six sections of `data/verification.json` those
+steps recompute (analysis, hard_tests, scale, controls, stability, all_tiles_analysis) come back
+to floating-point precision; the other five (label_index, tile_selection, heldout_scan,
+supervision_scan, transfer) are written by steps 1, 2, 3 and 8 and are copied unchanged from
+the committed file. Its `meta` block records the run date, so the file itself is not
+byte-identical, and the three PNGs come back pixel for pixel identical. Every seeded procedure
 (permutation null, bootstraps, the size-matched control) uses a fixed seed.
 
 Steps 1, 2, 3 and 8, and the first half of step 10, redo the measurement itself. Those need

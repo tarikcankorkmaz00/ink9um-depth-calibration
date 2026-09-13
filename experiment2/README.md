@@ -13,13 +13,15 @@ was trying to make the comparison fair.
 
 **Short version.** The published checkpoint's output depends on where the 128x128 window
 starts. Move the window and score the *same* pixels against the *same* labels: shifts that
-are a multiple of 8 px cost nothing (|delta AUC| <= 0.008), and shifts that are not cost up
-to **-0.13 mean AUC** on a single patch. In real sliding-window inference with Hann
-blending, every stride that is a multiple of 8 lands within **0.0006** of the default, and
-the off-grid strides cost **-0.005 to -0.032**, in every measurement. This is reachable
+are a multiple of 8 px, up to 32 px, cost nothing in the tile scans (|delta AUC| <= 0.008),
+and shifts that are not cost up to **-0.13 mean AUC** on a single patch in the one-axis tile
+scan (up to -0.23 in a 12-block reproduction). In real
+sliding-window inference with Hann blending, the six on-grid strides I tested land within
+**0.0006** of the default on average, and the four off-grid strides cost **-0.005 to
+-0.032** on average, each worse than the default in 5 of 5 measurements. This is reachable
 from the shipped CLI: `stride = round(128 * (1 - overlap))`, so of the ten one-decimal
 `--overlap` values a person might type, **eight are off the grid**. `--overlap 0.3` costs
-0.032 AUC against the default for no reason at all. I could not explain *why* the period is
+0.032 AUC on average against the default (5 of 5 measurements) for no reason at all. I could not explain *why* the period is
 8 and I am not claiming a mechanism - see "What I could not explain" below.
 
 And the family question: with the phase locked and the tiles matched, **no measurable
@@ -50,8 +52,11 @@ boundary does.
 | native9, n=94, mean delta AUC | 0 | -0.007 | -0.056 | -0.091 | **-0.102** | -0.004 | -0.115 | +0.001 | -0.130 | -0.007 | **-0.134** | +0.003 |
 | aligned, n=68, mean delta AUC | 0 | -0.004 | -0.048 | -0.090 | -0.092 | +0.005 | -0.092 | +0.006 | **-0.104** | +0.004 | -0.089 | +0.001 |
 
-The period is 8. Multiples of 8 are free; everything else is not, and the worst case is 4
-away from a multiple of 8. The same shape appears in x, and in both axes at once.
+The period is 8. Multiples of 8 are free, and so, in this scan, is a 1 px shift (-0.007
+native9, -0.004 aligned); in it, every shift 2 px or more from a multiple of 8 costs at least
+0.04. This scan samples only some odd shifts; in it the worst case is 4 away from a multiple
+of 8, while the 1 px-dense reproduction puts the worst case of every period 5 px past a
+multiple of 8. The same shape appears in x, and in both axes at once.
 
 Two things about that table that I would rather state than have someone find:
 
@@ -65,9 +70,9 @@ Two things about that table that I would rather state than have someone find:
 
 | candidate explanation | test | result |
 |---|---|---|
-| fp16 numerics | rerun the whole scan in fp32 | largest fp16/fp32 gap 0.00011 |
+| fp16 numerics | rerun 24 tiles at 6 window shifts in fp32 | largest fp16/fp32 gap 0.00011 |
 | per-window input normalisation | normalise once over the whole block instead | shift-4 cost -0.15769 vs -0.15819 |
-| a bug in my scoring code | rewrite the measurement from scratch, second code path | period 8, loss -0.15 to -0.23 |
+| a bug in my scoring code | rewrite the measurement from scratch, second code path (output in `phase.json`; that code is not in this repo) | period 8, loss -0.15 to -0.23 |
 | uneven coverage in blended inference | compare neighbouring strides (see below) | ruled out, 5/5 in four pairs |
 
 ### What it costs in real inference
@@ -126,7 +131,7 @@ confined to an edge strip, and it is an inference from reading the code, not a r
 > a multiple of 32, which is the stride the model was trained with (`stride_xy = 32` in the
 > checkpoint's own provenance block). With the CLI that means choosing an `--overlap` whose
 > stride is a multiple of 8: 0, 0.25, 0.375, 0.5, 0.75, 0.875. Otherwise you lose 0.005 to
-> 0.032 AUC in blended output, and 0.09 to 0.13 on a single patch in the tile scans
+> 0.032 AUC on average in blended output, and 0.09 to 0.13 on a single patch in the one-axis tile scan
 > (up to 0.23 in the 12-block reproduction), silently.
 
 Quote those two ranges separately. They are different measurements and the single-patch
@@ -143,8 +148,10 @@ window's global statistics, but that would explain why multiples of 32 are not *
 equivalent - and they are not, the logit correlation at shift 32 is only 0.90 - and it does
 not explain a period of 8.
 
-So: the behaviour is measured, on three independent code paths, with its main competing
-explanation ruled out. The reason is open.
+So: the behaviour is measured on three code paths (the single-patch scan and blended
+inference in `measure/`, which share their loading and scoring code, and a second
+implementation whose output is in `phase.json` but whose code is not in this repo), with its
+main competing explanation ruled out. The reason is open.
 
 ---
 
